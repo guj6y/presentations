@@ -1,0 +1,18 @@
+web&clustCoef&gen&vul&meanVulPrey&meanImpPrey&\\
+\hline
+bahia&-0.11&\textcolor{red}{0.0081}&\textcolor{red}{-1.6e-10}&0.46&-0.85&\\
+carp&-0.47&\textcolor{red}{1.4e-05}&\textcolor{red}{-2.2e-08}&\textcolor{red}{0.0063}&-0.1&\\
+punta&-0.59&\textcolor{red}{1.5e-10}&\textcolor{red}{-7.2e-14}&\textcolor{red}{0.00047}&\textcolor{red}{-0.015}&\\
+flens&\textcolor{red}{-3.1e-09}&\textcolor{red}{0.00016}&-0.2&\textcolor{red}{1.7e-05}&-0.086&\\
+otago&-0.56&0.078&\textcolor{red}{-0.00016}&\textcolor{red}{5e-14}&\textcolor{red}{-0.0028}&\\
+sylt&0.065&0.72&\textcolor{red}{-6.2e-12}&\textcolor{red}{2e-10}&\textcolor{red}{-0.013}&\\
+\hline
+\hline
+ web&meanGenPred&meanImpPred&minSPToBasal&numConnBasal&SWTL&inLoop\\
+\hline
+bahia&\textcolor{red}{-2.2e-08}&\textcolor{red}{4.3e-07}&\textcolor{red}{-5.9e-16}&\textcolor{red}{-2e-07}&\textcolor{red}{-1.9e-09}&\textcolor{red}{-5.6e-08}\\
+carp&\textcolor{red}{-3.8e-06}&\textcolor{red}{6.5e-07}&\textcolor{red}{-4.3e-15}&\textcolor{red}{-0.0042}&\textcolor{red}{-2e-05}&\textcolor{red}{-0.0024}\\
+punta&\textcolor{red}{-1e-13}&\textcolor{red}{3.4e-11}&\textcolor{red}{-7.1e-23}&\textcolor{red}{-3.3e-07}&\textcolor{red}{-2.3e-10}&\textcolor{red}{-2.3e-07}\\
+flens&\textcolor{red}{-8.2e-10}&\textcolor{red}{2.3e-07}&\textcolor{red}{-5.1e-15}&\textcolor{red}{-2.1e-07}&\textcolor{red}{-9.2e-15}&\textcolor{red}{-2.1e-10}\\
+otago&-0.45&0.4&\textcolor{red}{-1.1e-12}&-0.13&\textcolor{red}{-1.5e-06}&\textcolor{red}{-0.018}\\
+sylt&\textcolor{red}{-6e-05}&\textcolor{red}{0.029}&\textcolor{red}{-5.9e-19}&\textcolor{red}{-5.7e-07}&\textcolor{red}{-1.2e-15}&\textcolor{red}{-6.5e-10}\\
