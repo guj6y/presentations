@@ -133,7 +133,7 @@ x_i=a_xM_i^{-0.25}
 \begin{itemize}[<+->]
 \item Use trophic levels:
 \[
-M_i=Z^{TL-1}
+M_i=Z^{TL_i-1}
 \]
 \item Defines an 'average' size hierarchy.
 \end{itemize}
@@ -179,16 +179,17 @@ $Z = 10$ (no parasites):
 \begin{frame}
 \frametitle{Consumer - Resource Body Size Ratio}
 \begin{itemize}[<+->]
-\item Use trophic levels:
+\item Want parasites $Z_p$ times host and free livers $Z_p$ times resource.
+\item $i$ free liver:
 \[
-M_i=Z_f^{TL-1}
+M_i=Z_f^{TL_i-1}
 \]
-\item 
+\item $i$ parasite:
 \only<2>{
 Maybe...?
 
 \begin{tikzpicture}
-\node at (0,0) {$M_p = Z_p^{TL-1}$};
+\node at (0,0) {$M_i = Z_p^{TL_i-1}$};
 \end{tikzpicture}}
 
 \only<3>{
@@ -223,6 +224,7 @@ $Z_f = 10$ and $Z_p = 10^{-3}$
 \shade [ball color=blue] (s2) circle (1.08cm);
 \shade [ball color=blue] (s3) circle (2.313cm);
 \draw [ball color=red] (p1) circle (.05cm);
+
 \draw [ball color = red] (p2) circle (.108cm);
 \end{tikzpicture}
 }
@@ -251,23 +253,221 @@ $Z_f = 10$ and $Z_p = 10^{-3}$
 }
 \end{frame}
 
-\section{Niche Model Additions}
+\begin{frame}
+\frametitle{Consumer - Resource Body Size Ratio}
+\begin{itemize}[<+->]
+\item If $p$ and $k$: exponents of body size ratios of parasite-host and consumer-resource relationships..
+\item $i$ free liver:
+\[
+M_i = 10^{k(TL_i-1)}
+\]
+\item $i$ parasite:
+\[
+M_i = 10^{p + k(TL_i-2)}
+\]
+\end{itemize}
+\end{frame}
+
+\section{Changing the Structure}
+\begin{frame}
+\frametitle{Inverse Niche Models}
+\only<1>{
+\begin{tikzpicture}
+\draw (0,0)--(10,0)
+node[anchor = west] {$n$};
+\draw (0,.2)--(0,-.2)
+node[anchor = north] {$0$};
+\draw (10,.2)--(10,-.2)
+node[anchor = north] {$1$};
+%Predator
+\fill (7,0) circle (.07) 
+node[anchor = north]  {$n_j$};
+%Predator Diet
+\draw (7,0)--(7,.75)--(2,.75)--(2,.5);
+\draw (.3,0) -- (.3,.5) -- (3.7,.5) -- (3.7,0);
+\draw[dashed] (2,.5) -- (2,0) 
+node[anchor = south east] {$c_j$};
+\draw[<->] (.3,-.5) -- (3.7,-.5)
+node[fill=white,pos = 0.5] {$r_j$}; 
+\draw[dashed] (.3,0)--(.3,-.55);
+\draw[dashed] (3.7,0)--(3.7,-.55);
+%Prey
+\fill (3,0) circle (.07) 
+node[anchor = north west]  {$n_i$};
+\draw(4.2,-2) circle (.3)
+node {$i$};
+\draw[->] (4.5,-2) -- (5.5,-2);
+\draw(5.8,-2) circle (.3)
+node {$j$};
+\end{tikzpicture}
+}
+\only<2->{
+\begin{tikzpicture}
+\draw (0,0)--(10,0)
+node[anchor = west] {$n$};
+\draw (0,.2)--(0,-.2)
+node[anchor = north] {$0$};
+\draw (10,.2)--(10,-.2)
+node[anchor = north] {$1$};
+%Host
+\fill (6,0) circle (.07) 
+node[anchor = north]  {$n_i$};
+%Predator Diet
+\draw (7,0.5)--(7,.75)--(2,.75)--(2,0);
+\draw (5.3,0) -- (5.3,.5) -- (8.7,.5) -- (8.7,0);
+\draw[dashed] (7,.5) -- (7,0) 
+node[anchor = south east] {$c_p$};
+\draw[<->] (5.3,-.5) -- (8.7,-.5)
+node[fill=white,pos = 0.5] {$r_p$}; 
+\draw[dashed] (5.3,0)--(5.3,-.55);
+\draw[dashed] (8.7,0)--(8.7,-.55);
+%Parasite
+\fill (2,0) circle (.07) 
+node[anchor = north west]  {$n_p$};
+\draw(4.2,-2) circle (.3)
+node {$i$};
+\draw[->] (4.5,-2) -- (5.5,-2);
+\draw(5.8,-2) circle (.3)
+node {$p$};
+\end{tikzpicture}
+}
+\begin{itemize}
+\item<3-> $n_p \sim U(\textcolor{red}{a,b})$
+\item<4-> $y_p \sim \text{Beta}(1,\textcolor{red}{\beta_p})$
+\item<5-> $r_p \sim \textcolor{red}{(1-n_p)} \cdot y_p$
+\item<6-> $c_{p}\sim U(\max{(n_p,r_p/2)},1-r_p/2)$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Inverse Niche Models: Further Issues}
+\begin{itemize}
+\item <1-> Types of links; sub-web connectances
+\item <2-> Diet intersections with parasitic niches
+\item <3-> Scale dependent errors vs. Parasitic errors
+\item <4-> Low(?) parasitic resolution
+\end{itemize}
+\end{frame}
 
 \subsection{Proposed Models}
+\begin{frame}
+\frametitle{Host Refuge Model}
+Tracking where parasites are, in the simplest way:
+\begin{equation}
+\phi_i = 
+\left\{
+\begin{array}{c c c}
+\phi & \text{if} & i:\text{ parasite}\\
+1 & \text{if} & i:\text{ free-liver}\\
+\end{array}
+\right.
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Host Refuge Model}
+ATN Equations
+\begin{align*}
+\frac{dB_{b}}{dt} &= r_bB_b\left(1-\frac{\sum_{k\in\text{basal}}B_k}{K}\right) - \sum_k\phi_kB_kx_k\frac{y_{bk}F_{bk}^\text{(troph)}}{e_{bk}} - \sum_k(1-\phi_k)B_kx_k\frac{y_{bk}F^\text{(para)}_{bk}}{e_{bk}}\\
+\frac{dB_{c}}{dt} &= -x_cB_c + \phi_cx_cB_c\sum_ky_{kc}F^\text{(troph)}_{kc} + (1-\phi_c)x_cB_c\sum_ky_{kc}F^\text{(para)}_{kc} \\
+&- \sum_k \phi_kx_kB_k\frac{y_{ck}F^\text{(troph)}_{ck}}{e_{ck}} - \sum_k (1-\phi_k)x_kB_k\frac{y_{ck}F^\text{(para)}_{ck}}{e_{ck}}\\
+\end{align*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Host Refuge Model}
+Functional Responses:
+
+\begin{equation}
+F_{ij}^\text{(troph)} = \frac{\omega_{ij}^{(troph)}(\phi_iB_i)^{1+h}}{B_0^{1+h} + \sum_k\omega^\text{(troph)}_{kj}(\phi_kB_k)^{1+h}} 
+\end{equation}
+and
+\begin{equation}
+F_{ij}^\text{(para)} = \frac{\omega_{ij}^{(para)}(\phi_iB_i)^{1+h}}{B_0^{1+h} + \sum_k\omega^\text{(para)}_{kj}(\phi_kB_k)^{1+h}} 
+\end{equation}
+\end{frame}
+
+\begin{frame}
+\frametitle{Concomittant Predation}
+
+\begin{tikzpicture}
+\node[draw,circle] at (0,0) (j) {$j$};
+\node[draw,circle] at (1,-2) (i) {$i$};
+\node[draw,circle] at (2,-1) (p) {$p$};
+\draw[->] (i)--(j);
+\draw[->] (i)--(p);
+\draw[->,dashed] (p)--(j);
+\end{tikzpicture}
+
+Additional loss term to parasitic equations.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Concomittant Predation}
+For a parasite, $p$ and host, $h$:
+\begin{align*}
+I_p & = \sum_h a_{ph}C_h\\
+a_{ph}& = \frac{B_p}{B_h}\frac{y_{hp}F_{hp}}{\sum_{k}y_{kp}F_{kp}}\\ 
+C_h &= \sum_kx_kB_k\frac{F_{kh}y_{kh}}{e_{kh}} 
+\end{align*}
+When I don't track parasites inside or outside of hosts. 
+\end{frame}
+
+\begin{frame}
+\frametitle{Concomittant Predation}
+\begin{align*}
+I_p & = \sum_h a_{ph}C_h\\
+a_{ph} &= \frac{B_p}{B_h}\frac{y_{hp}F_{hp}}{\sum_{k}y_{kp}F_{kp}} \label{aph2}
+C_h &= \sum_kx_kB_k\frac{F^\text{(troph)}_{kh}y_{kh}}{e_{kh}} 
+\end{align*}
+When I do track parasites inside or outside of hosts.
+\end{frame}
 
 \subsection{Results}
+
+\begin{frame}
+\frametitle{Structural Models}
+Nope.
+\end{frame}
 
 \section{ATN Additions}
+\begin{frame}
+\frametitle{Persistence of All Species}
 
-
-
-
-
-\subsection{Proposed Models}
-
-\subsection{Results}
+\begin{tikzpicture}
+\begin{axis}
+\addplot+[
+		  only marks, mark = o,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/biomass-big-big-subplot-1};
+\addplot+[
+		  only marks, mark = triangle,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/biomass-big-big-subplot-2};
+\addplot+[
+		  only marks, mark = square,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/biomass-big-big-subplot-3};
+\addplot+[
+		  only marks, mark = diamond,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/biomass-big-big-subplot-4};
+\end{axis}
+\end{tikzpicture}
+\end{frame}
 
 \section{Conclusions}
 
 \section{Future Work}
+
+
 \end{document}
