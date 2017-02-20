@@ -1,6 +1,6 @@
 \documentclass{beamer}
 
-\usepackage{tikz,pgfplots}
+\usepackage{tikz,pgfplots,graphicx}
 
 \title{Parasites in Structural and Dynamical models of Food Webs}
 \author{Nick Kappler}
@@ -427,8 +427,143 @@ When I do track parasites inside or outside of hosts.
 \section{Results}
 
 \begin{frame}
-\frametitle{Structural Models}
-Nope.
+\frametitle{Empirical Data}
+\includegraphics[width = \linewidth]{corMapSpear.jpg}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Empirical Data }
+$P$-values for testing $\mu_{free} - \mu_{para}\neq0$ for each property:\vspace{.25in}
+
+\tiny{
+\begin{tabular}{|r| c c c c c c|}
+\hline
+\input{pValsAllProps2.textab}
+\hline
+\end{tabular}}
+\end{frame}
+
+\begin{frame}
+\frametitle{A Classification Tree}
+\begin{itemize}[<+->]
+\item Binary Splits
+\item 4 classes
+\item Species Overlap?
+\item How to use?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{A Classification Tree}
+\begin{tikzpicture}
+\tikzstyle{every node}=[draw,rectangle]
+\node [] at (0,0) (A) {\tiny
+\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&310\\
+2&79\\
+3&160\\
+4&260\\
+\hline
+error&61.7\%\\
+\end{tabular}
+};
+\node at (-1.5,-3) (B) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&213\\
+2&3\\
+3&22\\
+4&2\\
+\hline
+error&11.2\%\\
+\end{tabular}
+};
+\node at (6,0) (C) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&97\\
+2&76\\
+3&138\\
+4&258\\
+\hline
+error&54.6\%\\
+\end{tabular}
+};
+\node at (1.5,-3) (D) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&18\\
+2&3\\
+3&2\\
+4&119\\
+\hline
+error&16.1\%\\
+\end{tabular}
+};
+\node at (6,-3) (E) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&79\\
+2&73\\
+3&136\\
+4&139\\
+\hline
+error&67.4\%\\
+\end{tabular}
+};
+\node at (2,-6) (F) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&59\\
+2&64\\
+3&119\\
+4&27\\
+\hline
+error&55.8\%\\
+\end{tabular}
+};
+\node at (7.5,-6) (G) {\tiny\begin{tabular}{c|c}
+Class&Count\\
+\hline
+1&20\\
+2&9\\
+3&17\\
+4&112\\
+\hline
+error&29.1\%\\
+\end{tabular}
+};
+\draw[->] (A)-- node [pos = 0.5,fill =white] {\tiny$swTL <2.91$} (B);
+\draw[->] (A)--node [pos = 0.5,fill =white] {\tiny$swTL \geq2.91$}(C);
+\draw[->] (C)--node [pos = 0.5,fill =white] {\tiny$\langle genPred \rangle <.124$}(D);
+\draw[->] (C)--node [pos = 0.5,fill =white] {\tiny$\langle genPred \rangle \geq.124$}(E);
+\draw[->] (E)--node [pos = 0.5,fill =white] {\tiny$\langle genPred \rangle <2.38$}(F);
+\draw[->] (E)--node [pos = 0.5,fill =white] {\tiny$\langle genPred \rangle \geq 2.38$}(G);
+\only<1>{\node [blue] at (-1,-5) (Key) {\tiny
+\begin{tabular}{c |l}
+Number&Class\\
+\hline
+1&Ecto. Inv.\\
+2&Ecto. Vert.\\
+3&Endotherm\\
+4&Parasite
+\end{tabular}};}
+\only<2>{
+\node [blue] at (-1.2,-5) {\tiny
+\begin{tabular}{c| l| l}
+Split& Error & Var. Exp.\\
+\hline
+0&.617&-\\
+1&.418&.323\\
+2&.418&0\\
+3&.304&.184\\
+\end{tabular}
+};}
+\end{tikzpicture}
 \end{frame}
 
 \begin{frame}
@@ -444,28 +579,28 @@ Nope.
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-big-big-subplot-1};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-small-big-subplot-1};
 \addlegendentry{\tiny Null Model}
 \addplot+[
 		  only marks, mark = triangle,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-big-big-subplot-2};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-small-big-subplot-2};
 \addlegendentry{\tiny Host Refuge}
 \addplot+[
 		  only marks, mark = square,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-big-big-subplot-3};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-small-big-subplot-3};
 \addlegendentry{\tiny Concomittant Only}
 \addplot+[
 		  only marks, mark = diamond,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-big-big-subplot-4};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-small-big-subplot-4};
 \addlegendentry{\tiny Refuge with Concomittant}
 \end{axis}
 \end{tikzpicture}
@@ -483,74 +618,256 @@ table[x =x,y =y,y error =yp,col sep = comma]{plotData/persistence-big-big-subplo
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-big-big-subplot-1};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-small-big-subplot-1};
 \addlegendentry{\tiny Null Model}
 \addplot+[ only marks, mark = triangle,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-big-big-subplot-2};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-small-big-subplot-2};
 \addlegendentry{\tiny Host Refuge}
 \addplot+[
 		  only marks, mark = square,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-big-big-subplot-3};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-small-big-subplot-3};
 \addlegendentry{\tiny Concomittant Only}
 \addplot+[
 		  only marks, mark = diamond,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-big-big-subplot-4};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/free-persistence-small-big-subplot-4};
 \addlegendentry{\tiny Refuge with Concomittant}
 \end{axis}
 \end{tikzpicture}
 \end{frame}
 
 \begin{frame}
-\frametitle{Persistence of Free-Livers}
+\frametitle{Persistence of Parasites}
 
 \begin{tikzpicture}
 \begin{axis}[x = 15cm,
 			title = {Parasite Persistence},
 		    xlabel = {Fraction Consumers as parasites},
-			ylabel = {Persistence}]
+			ylabel = {Persistence},
+		    legend pos = north west]
 \addplot+[
 		  only marks, mark = o,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-big-big-subplot-1};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-small-big-subplot-1};
 \addlegendentry{\tiny Null Model}
 \addplot+[
 		  only marks, mark = triangle,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-big-big-subplot-2};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-small-big-subplot-2};
 \addlegendentry{\tiny Host Refuge}
 \addplot+[
 		  only marks, mark = square,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-big-big-subplot-3};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-small-big-subplot-3};
 \addlegendentry{\tiny Concomittant Only}
 \addplot+[
 		  only marks, mark = diamond,
           error bars/.cd,
 		  y explicit, y dir=both,
 ]
-table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-big-big-subplot-4};
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/para-persistence-small-big-subplot-4};
 \addlegendentry{\tiny Refuge with Concomittant}
 \end{axis}
 \end{tikzpicture}
 \end{frame}
+
+
+\begin{frame}
+\frametitle{Fraction of Species Extinct Before Parasites}
+
+\begin{tikzpicture}
+\begin{axis}[x = 15cm,
+		    xlabel = {Fraction Consumers as parasites},
+			ylabel = {$Fraction of Species$},
+		    legend pos = north east]
+\addplot+[
+		  only marks, mark = o,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-para-first-small-big-subplot-1};
+\addlegendentry{\tiny Null Model}
+\addplot+[
+		  only marks, mark = triangle,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-para-first-small-big-subplot-2};
+\addlegendentry{\tiny Host Refuge}
+\addplot+[
+		  only marks, mark = square,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-para-first-small-big-subplot-3};
+\addlegendentry{\tiny Concomittant Only}
+\addplot+[
+		  only marks, mark = diamond,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-para-first-small-big-subplot-4};
+\addlegendentry{\tiny Refuge with Concomittant}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{Fraction of Parasitic Links with Host Extinct First}
+
+\begin{tikzpicture}
+\begin{axis}[x = 15cm,
+		    xlabel = {Fraction Consumers as parasites},
+			ylabel = {Fraction of Species},
+		    legend pos = south east]
+\addplot+[
+		  only marks, mark = o,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-Host-first-small-big-subplot-1};
+\addlegendentry{\tiny Null Model}
+\addplot+[
+		  only marks, mark = triangle,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-Host-first-small-big-subplot-2};
+\addlegendentry{\tiny Host Refuge}
+\addplot+[
+		  only marks, mark = square,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-Host-first-small-big-subplot-3};
+\addlegendentry{\tiny Concomittant Only}
+\addplot+[
+		  only marks, mark = diamond,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-Host-first-small-big-subplot-4};
+\addlegendentry{\tiny Refuge with Concomittant}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Fraction of Links with Consumer extinct First}
+
+\begin{tikzpicture}
+\begin{axis}[x = 15cm,
+		    xlabel = {Fraction Consumers as parasites},
+			ylabel = {Fraction of Parasites},
+		    legend pos = south east]
+\addplot+[
+		  only marks, mark = o,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-con-first-small-big-subplot-1};
+\addlegendentry{\tiny Null Model}
+\addplot+[
+		  only marks, mark = triangle,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-con-first-small-big-subplot-2};
+\addlegendentry{\tiny Host Refuge}
+\addplot+[
+		  only marks, mark = square,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-con-first-small-big-subplot-3};
+\addlegendentry{\tiny Concomittant Only}
+\addplot+[
+		  only marks, mark = diamond,
+          error bars/.cd,
+		  y explicit, y dir=both,
+]
+table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-con-first-small-big-subplot-4};
+\addlegendentry{\tiny Refuge with Concomittant}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Fraction of Links with Resource Extinct First}
+%
+%\begin{tikzpicture}
+%\begin{axis}[x = 15cm,
+%		    xlabel = {Fraction Consumers as parasites},
+%			ylabel = {Fraction of Links},
+%		    legend pos = north east]
+%\addplot+[
+%		  only marks, mark = o,
+ %         error bars/.cd,
+%		  y explicit, y dir=both,
+%]
+%table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-res-first-small-big-subplot-1};
+%\addlegendentry{\tiny Null Model}
+%\addplot+[
+%		  only marks, mark = triangle,
+%          error bars/.cd,
+%		  y explicit, y dir=both,
+%]
+%table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-res-first-small-big-subplot-2};
+%\addlegendentry{\tiny Host Refuge}
+%\addplot+[
+%		  only marks, mark = square,
+%          error bars/.cd,
+%		  y explicit, y dir=both,
+%]
+%table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-res-first-small-big-subplot-3};
+%\addlegendentry{\tiny Concomittant Only}
+%\addplot+[
+%		  only marks, mark = diamond,
+%          error bars/.cd,
+%		  y explicit, y dir=both,
+%]
+%
+%table[x =x,y =y,y error =yp,col sep = comma]{plotData/frac-res-first-small-big-subplot-4};
+%\addlegendentry{\tiny Refuge with Concomittant}
+%\end{axis}
+%\end{tikzpicture}
+%\end{frame}
+
 \section{Conclusions}
+\begin{frame}
+\frametitle{Conclusions}
+\begin{itemize}[<+->]
+\item Parasites are hard to distinguish structurally
+\item What differences there are could be from bias
+\item Adding parasites tends to decrease persistence
+\item some patterns to which species go extinct
+\end{itemize}
+\end{frame}
+
 
 \section{Future Work}
-
+\begin{frame}
+\begin{itemize}[<+->]
+\item Switching types of species is bad
+\item More analysis of structures
+\item Equilibrium points and limit cycles
+\item Analysis of Equations and parameters
+\end{itemize}
+\end{frame}
 
 \end{document}
