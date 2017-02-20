@@ -1,0 +1,300 @@
+\documentclass[11pt]{amsart}
+\usepackage{geometry}                % See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   % ... or a4paper or a5paper or ... 
+%\geometry{landscape}                % Activate for for rotated page geometry
+%\usepackage[parfill]{parskip}    % Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{epstopdf}
+%\usepackage{multicolumn}
+\usepackage{tabularx}
+\DeclareGraphicsRule{.tif}{png}{.png}{`convert #1 `dirname #1`/`basename #1 .tif`.png}
+
+\title{Methods}
+\author{Nick Kappler}
+
+
+\begin{document}
+\maketitle
+\section{Including Parasites (or, changing a few body size ratios)}
+The main thing we are testing is how changing a certain fraction of species to have body mass ratios less than one.  Adding the biological models of fraction of time spent as a free liver and concomittant predation is just the icing on the cake.  I think what we really want to get insight on is the effect of changing body size ratios.
+
+\subsection{Independent Variables}
+The main variable I am going to test (the $x$-axis on all my plots) is the fraction of consumers that are parasites.  I will be testing 8 fractions evenly spaced from .05 to .75.  I chose that over fraction of total species and an absolute number of parasites.  I didn't like fraction of total species because I didn't want to include basal species and potentially have some webs that were all parasites and no free-livers.  Ditto for the absolute number.  I also wanted each step to represent the same proportional change.
+
+Each type of species (free-liver and parasite) will be tested with two different body size ratios: free livers will be 10 times larger than their prey, on average, for one set of simulations, and 100 in another set.  Likewise, parasites will be on average 1,000 or 10,000 times smaller than their host.  This can lead to some problems - see the issues section.  These two factors lead to 4 sets of simulations.
+
+I will further test two additional pieces to the model.  The first is including a constant for each species that represents the fraction of the population in a free living stage.  I denote this constant $\phi_{i}$ (equal to 1 for free-living specie).  I use this constant to split the parasites interaction into trophic and non-trophic (i.e. parasite-host) interactions.  Parasites are only vulnerable to predation (or parasitism) during their free-living stage.  When they are inside a host ($1-\phi_{i}$ of the population), they are only vulnerable to concomitant predation.\footnote{But note that parasites should be able to eat each other inside hosts as well.  Also, some parasites can be eaten by symbionts of their host - i.e. pilot or remora fish and sharks.}  The second addition to the model is concomitant predation.  When a parasite is in a host, it is killed when that host is eaten.  At this point, the benefit to the consumer will be neglected.  See below for explicit formulae.  These two models will be added one at a time to a basic ATN model which gives 4 different models (no addition, just fraction free-living, just concomitant, fraction free-living and concomitant).
+
+
+\subsection{Models}
+I will be using 4 models.  The basic ATN model is as follows (see the parameters section for parameter values):
+
+\begin{align}
+\frac{dB_{b}}{dt} &= r_bB_b\left(1-\frac{\sum_{k\in\text{basal}}B_k}{K}\right) - \sum_kB_kx_k\frac{y_{bk}F_{bk}}{e_{bk}}\label{basalEq0} \\ 
+\frac{dB_{c}}{dt} &= -x_cB_c + x_cB_c\sum_ky_{kc}F_{kc} - \sum_k x_kB_k\frac{y_{ck}F_{ck}}{e_{ck}} \label{conEq0}
+\end{align}
+
+Where $B_b$ and $B_c$ denotes biomass density of basal and consumer species; thus \eqref{basalEq0} and \eqref{conEq0} represent rates of change of basal and consumer populations, respectively (regardless of whether the consumer is a free liver or parasite).  $r_b$ is the growth rate of basal species $b$, $K$ is the shared system carrying capacity for basal species.  $x_i$ is the mass specific metabolic rate of consumer $i$. $y_ij$ is the maximum ingestion rate of $i$ by $j$ relative to $j$'s metabolic rate and $e_{ij}$ is the assimilation efficiency of $j$ when consuming $i$. $F_{ij}$ is the functional response of $j$ preying on $i$ and has the following form:
+\begin{equation}
+\frac{\omega_{ij}B_j^{1+q}}{B_0^{1+h} + \sum_k\omega_{kj}B_k^{1+h}}
+\label{FR0}
+\end{equation}
+Where $h$ quantifies deviation from a multi-species Type I functional response, $\omega_{ij}$ is the relative preference for prey item $j$ by $i$, and $B_0$ is the half-saturation density.  When $h=0$ and $j$ has only one prey, this is the density of prey that yields an attack rate on $i$ by $j$ equal to half the maximum attack rate.  In the case of multiple prey and/or $h\neq0$, it is harder to interpret but generally affects how quickly the functional response approaches it's maximal value.  
+
+I introduce two further additions to this model.  The first is to track how much of a parasite population is in a host at any given time.  This is controlled by the parameter
+\begin{equation}
+\phi_i = 
+\left\{
+\begin{array}{c c c}
+\phi & \text{if} & i:\text{ parasite}\\
+1 & \text{if} & i:\text{ free-liver}\\
+\end{array}
+\right.\label{phiDef}
+\end{equation}
+Note that this means in particular that $\phi_i$ is the same for all parasites and 1 for all free-livers.  Using $\phi_i$  I make the following changes to \eqref{basalEq0} and \eqref{conEq0}:
+
+\begin{align}
+\frac{dB_{b}}{dt} &= r_bB_b\left(1-\frac{\sum_{k\in\text{basal}}B_k}{K}\right) - \sum_k\phi_kB_kx_k\frac{y_{bk}F_{bk}^\text{(troph)}}{e_{bk}} - \sum_k(1-\phi_k)B_kx_k\frac{y_{bk}F^\text{(para)}_{bk}}{e_{bk}}\label{basalEq1} \\ 
+\frac{dB_{c}}{dt} &= -x_cB_c + \phi_cx_cB_c\sum_ky_{kc}F^\text{(troph)}_{kc} + (1-\phi_c)x_cB_c\sum_ky_{kc}F^\text{(para)}_{kc} \label{conEq1}\\ 
+&- \sum_k \phi_kx_kB_k\frac{y_{ck}F^\text{(troph)}_{ck}}{e_{ck}} - \sum_k (1-\phi_k)x_kB_k\frac{y_{ck}F^\text{(para)}_{ck}}{e_{ck}}\nonumber
+\end{align}
+
+Though a lot more ink (or pixels) is required to write down this model, the basic Idea is simple: I split the links to parasites by whether or not the parasite acts as a classic consumer (larger than prey) or a parasitic consumer (smaller than prey), then treat them appropriately.  To do this, I needed to introduce two separate  preference matrices, $\omega_{ij}$, and therefore two separate functional response, namely:
+
+\begin{equation}
+F_{ij}^\text{(troph)} = \frac{\omega_{ij}^{(troph)}(\phi_iB_i)^{1+h}}{B_0^{1+h} + \sum_k\omega^\text{(troph)}_{kj}(\phi_kB_k)^{1+h}} \label{FR1Troph}
+\end{equation}
+and
+\begin{equation}
+F_{ij}^\text{(para)} = \frac{\omega_{ij}^{(para)}(\phi_iB_i)^{1+h}}{B_0^{1+h} + \sum_k\omega^\text{(para)}_{kj}(\phi_kB_k)^{1+h}} \label{FR1Para}
+\end{equation}
+
+Two changes have been made to the original functional response.  First, all prey biomasses (in both functional response) have been multiplied by the fraction of free living time.  This is because only the portion $\phi_i$ of the biomass of species $i$ is available for consumption (either by free-livers or parasites) at any given time.  Second, the preference for a particular species is now determined by $\omega_{ij}^\text{(troph)}$ in $F_{ij}^\text{(troph)}$ and $\omega_{ij}^\text{(para)}$ in $F_{ij}^\text{(para)}$.  These new preferences take into account the fact that a parasite does not have to divide its foraging time as a free liver among its hosts.  By the same token, it doesn't have to divide it's 'foraging' time among it's free-living (i.e. trophic) prey items when within a host.
+
+The second addition is concomitant predation on parasites.  This comes in as an added term subtracted at the end of equations \eqref{conEq0} or \eqref{conEq1}.  The term can be compactly expressed as 
+\begin{equation}
+I_p = \sum_ha_{ph}C_h \label{Ip1}
+\end{equation}
+where $a_{ph}$ is the biomass of parasite $p$ per unit of biomass of host $h$, and $C_h$ is the total trophic consumption (total rate of change) of host $h$.  Breaking it down, we have
+\begin{equation}
+a_{ph} = \frac{(1-\phi_p)B_p}{B_h}\frac{y_{hp}F^\text{(para)}_{hp}}{\sum_{k}y_{kp}F^\text{(para)}_{kp}} \label{aph1}
+\end{equation}
+when we separate the trophic and parasitic links of parasites, and
+\begin{equation}
+a_{ph} = \frac{B_p}{B_h}\frac{y_{hp}F_{hp}}{\sum_{k}y_{kp}F_{kp}} \label{aph2}
+\end{equation}
+when we treat all links to parasites as parasitic.  In \eqref{aph1} and \eqref{aph2}, I have defined the fraction of the biomass of parasite $p$ in host $h$ to be the ratio of parasite $p$'s (parasitic) attack rate on $h$ divided by it's total (parasitic) attack rate on all of $h$'s hosts.  Finally,
+\begin{equation}
+C_h = \sum_kx_kB_k\frac{F^\text{(troph)}_{kh}y_{kh}}{e_{kh}} \label{CphEq}
+\end{equation}
+so, putting it all together we have
+\begin{equation}
+I_p = \sum_h \left(\frac{B_p}{B_h}\frac{y_{hp}F_{hp}}{\sum_{k}y_{kp}F_{kp}}\left[\sum_kx_kB_k\frac{F^\text{(troph)}_{kh}y_{kh}}{e_{kh}}\right] \right) \label{Ip2}
+\end{equation}
+
+\subsection{Parameter Values}
+All simulations are run on niche model webs with $S = 40$ and $C = 0.15$.  In the ATN model, most parameters are found via allometric scaling relationships.  Body mass is then one of the most fundamental parameters.  Since I want to test the effect of different body size ratios in this model, I define body mass for free-livers as follows:
+
+\begin{equation}
+M_i = Z_i^{T_i-1} \label{MF}
+\end{equation}
+
+
+Where $Z_i=Z$ is the desired body mass ratio for free-livers, and $T_{i}$ is the trophic level of species $i$.  In my simulations I use the short-weighted trophic level.  Thus, if I want predators to be, on average, 10 times larger than their prey, I would set $Z = 10$.  If I desired 100 times larger, I would use $Z=100$.  Unfortunately it does not work so simply for parasites.  To describe how parasite body masses are determined I need a few more parameters. Define $k$ as the common logarithm of the consumer-resource body size (C-R BSR) ratio for free livers, and $p$ as the common logarithm of the desired  C-R BSR for parasites preying on hosts.  Then if we set the body size for parasites as 
+
+\begin{equation}
+M_i = 10^{p + k(T_i -2)} \label{MP}
+\end{equation}
+
+With this choice, parasites will on average be $10^{p}$ times the size of their free-living hosts, $10^k$ times larger than their parasitic prey (same as free-livers on free livers) and $10^{2k-p}$ times smaller than their free-living predators.  This last ratio ($10^{2k-p}$) is not ideal since it creates a 'second hump' in the body size ratios for free-livers; I'm pretty sure that's unavoidable without special topological considerations for parasites.  From the body sizes we derive mass-specific metabolic rate using a negative one quarter power law:
+
+\begin{equation}
+x_i = a_xM_i^{-1/4}\label{xeq}
+\end{equation}
+
+For all my simulations I take $a_x = 0.314$, the constant for invertebrates.  See the table below for the remaining parameter values.
+
+In the functional response, I use the strong generalist model, so $\omega_{ij} = 1 \forall i,j$.  I also use a 'type II.2' functional response, so $h = 0.2$.  Finally, I use $B_0 = 0.5$ (all from Brose, Williams, and Martinez 2006).
+
+Many of the other constants in the models are determined from allometry, though the actual values are simply taken to be consistent with other papers since they are defined in such a way that all the body size dependence stays with $x_i$.  All parameters are summarized in the table below.
+
+
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\hline
+\multicolumn{3}{|c|}{Allometric Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$a_x^{(inv)}$&Scaling constant for metabolic rate of invertebrate consumers & $0.314$\\
+$Z$&Consumer-resource body size ratio&Variable, $n=4$\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Functional Response Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$B_0$&Half-saturation density&$0.5$\\
+$h$&Hill Coefficient&Variable, $0.2$\\
+$\omega_{ij}$&Preference of $i$ for $j$&$1$\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Dynamical Equation Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$r_i$&Intrinsic growth of producer $i$&$\mathcal{N}(1,0.1)$\\
+$K_i$&Carrying capacity of producer $i$&1\\
+$x_i$&Metabolic rate of consumer $i$&$a_x M_i^{-0.25}$\\
+$y_i$&Maximum relative consumption rate of invertebrate consumers & 8\\
+$e_{ij}^{(carn.)}$&Assimilation efficiency of $j$ by $i$ for a consumer $j$ (carnivory) & 0.85\\
+$e_{ij}^{(herb.)}$&Assimilation efficiency of $j$ by $i$ for a producer $j$ (herbivory) & 0.45\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Food Web Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$S$&Species richness&40\\
+$C$&Connectance & 0.15\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Dependent Variables}\\
+\hline
+Parameter & Values or Description & replicates\\
+$Z_\text{free}$&$Z=10,100$&2\\
+$Z_\text{para}$&$Z=.001,.0001$&2\\
+$I_p$&Concomittant Loss (Y/N)&2\\
+$F_{kh}^\text{(type)}$&Differentiate Parasitic Trophic links (Y/N)&2\\
+$f_{par}$&Fraction of consumers as Parasites (evenly spaced between .05 and .75)&8\\
+\hline
+\end{tabularx}
+
+\newpage
+
+\subsection{Issues} 
+\subsubsection{Body Size Ratios}
+I'm not sure that we are doing body size ratios correctly.  Using a constant value seems to do slightly better
+\subsubsection{Models}
+
+\newpage
+
+\section{Old Stuff: Reproducing Brose 2006}
+Square one was reproducing the results from Brose 2006 so I know where I am starting.  Actually I made some slight modifications.  An important thing I found was that with such a low error tolerance they weren't running the simulations for nearly enough time steps.  I re-ran with a million time steps and found that the persistence asymptote began at a body mass ratio of approximately 10, with some evidence of a slight dip starting at 1000.
+\subsection{Food Web Models}
+Using niche webs with the following parameters
+\begin{itemize}
+\item $S = 20,30,40$
+\item $C = 0.15$
+\item Restricting the population of webs to those that include exactly 5 basal species.  I get these webs by resampling until I get a web that works, then save that web.
+\end{itemize}
+
+I generate 100 webs for each of the above properties.  Those same 100 webs are used for every simulation.  This is in order to control for variability from the structural model but it comes at the cost of an increased bias towards those 100 webs that get chosen.  I think it is more statistically sound to compare effects in this way.  In the future, it will be probably be important to increase the number of webs to combat the bias introduced.  When I increase the number of webs I need to cast a somewhat smaller net in terms of what I'm testing since it is pretty computationally intensive to run the BWM2006 simulation (like, 8-10 hours per run).
+
+\subsection{ATN model}
+
+I'm using the following form of the ATN model:
+
+\begin{align*}
+\frac{dB_{i}}{dt} &= r_i B_i G_i &-\sum_{j \in con_i} \frac{x_jy_jB_jF_{j\leftarrow i}(\mathbf{B})}{e_{j\leftarrow i}f_{j\leftarrow i}}&\\
+\frac{dB_{i}}{dt} &= -x_iB_i &-\sum_{j \in con_i} \frac{x_jy_jB_jF_{j\leftarrow i}(\mathbf{B})}{e_{j\leftarrow i}f_{j\leftarrow i}} &+ x_iB_iy_i\sum{j\in res_i} F_{i\leftarrow j}(\mathbf{B}) \\
+\end{align*}
+
+Where $r_i$, the intrinsic growth rate of basal species $i$, and $x_i$, the metabolic rate of species $i$, are dimensionless and determined by allometry (see below).  The basal species do not compete and have the logistic self-limitation term: 
+\[
+G_i = 1 - \frac{B_i}{K_i}
+\]
+where $K_i$ is $i$'s carrying capacity.  $e_{i\leftarrow j}$ is the assimilation efficiency of $i$ when consuming $j$ - how efficiently biomass of $j$ is converted to biomass of $i$.  $f_{j\leftarrow i}$ is the fraction of biomass removed from the prey population that the predator actually consumes.  The functional response $x_iy_iF_{i\leftarrow j}(\mathbf{B})$ is the attack rate by a single unit (density or biomass) of species $i$ on the entire population of species $j$.  The functional response is split into two components.  $y_i$  is the maximum ingestion rate of $i$ relative to $i$'s metabolic rate.  Usually this doesn't vary between species types, and it doesn't here.  $F_{i\leftarrow j}$ determines the shape of the functional response; how a unit of predator biomass's (or unit of biomass density's) attack rate changes when the prey biomass (or biomass density) changes.  The general form being studied is:
+\[
+F_{i\leftarrow j}(\mathbf{B}) = \frac{\omega_{i\leftarrow j}B_j^h}{B_0^h + \sum_{k\in res_i}\omega{i\leftarrow k}B_k^h}
+\]
+Here, $\omega_{i\leftarrow j}$ is $i$'s relative consumption rate when consuming $j$.  That is, it is $i$'s preference for $j$.  $h$ is the Hill coefficient, and $B_0$ is the half-saturation density.
+\subsection{Allometric Scaling}
+The dimensionless rates $x_i$ and $r_i$, as well as the relative consumption rate $y_i$ are determined from allometric scaling.  The biological rates of primary (autotrophic) production, $R_P$, metabolism of consumers, $X_C$, and maximum consumption, $Y_C$ allometrically scale with body mass according to the standard negative quarter power law relationship:
+\begin{align*}
+R_P &= a_rM_P^{-0.25}\\
+X_C &= a_xM_C^{-0.25}\\
+Y_C &= a_yM_C^{-0.25}
+\end{align*}
+where $a_r$, $a_x$, and $a_y$ are allometric cosntants.  The subscripts $P$ and $C$ denote consumer or producer parameters, respectively.  The timescale of the system is defined by scaling all the values of $R_P$ and $X_C$ by a chosen producer species $k$'s rate of production, $R_k$.  Explicitly:
+\begin{align*}
+r_P &= \frac{R_P}{R_k}&\\
+x_C &= \frac{X_C}{R_k} &= \frac{a_x}{a_r}\left(\frac{M_C}{M_k}\right)^{-0.25}\\
+\end{align*}
+The maximum consumption rate of consumer $C$ is also scaled by the metabolic rate of consumer $C$ so that
+\[
+y_C = \frac{Y_C}{X_C} =\frac{a_y}{a_x}
+\]
+
+note that in this way the mass dependence of consumption rate becomes wholly contained in the metabolic rate of a species.  Thus, since $y_i$ depends solely the allometric constants (which vary only by species type), $y_i$ is constant for all species of a certain metabolic type.
+
+An important assumption of these food webs is that predator-prey body mass ratios, $Z$, are constant.  Thus, body sizes of predators decrease ($Z<1$) or increase ($Z>1$) with (short-weighted) trophic level, $T$ according to
+\[
+M_C = Z^T
+\]
+\subsection{Parameter Values}
+The allometric constants are taken from the literature; $a_r =1 $, $a_x = .314$ for invertebrates and $a_x = .88$ for ectotherm vertebrates.  The maximum consumption rate relative to metabolic rate is $y_j = 4$ for ectotherm vertebrates and $y_j = 8$ for invertebrates.  The situation is simplified by setting the body mass (and therefore intrinsic growth rate) of all basal species equal to 1.  In this way the body masses of all consumers are expressed relative to the boy mass of the basal species.  The assimilation efficiencies of $e_{i\leftarrow j} = .85$ for carnivory and $e_{i\leftarrow j} = .45$ for herbivory are also taken from the literature.  The parameter $\omega_{i\leftarrow j}$ can be derived via allometry, but in this experiment is taken to be either the weak  ($\omega_{i\leftarrow j} = \frac{1}{\text{size of i's diet}}$) or strong ($\omega_{i\leftarrow j} =1$) generalist model.  We set $B_0 = 0.5$ and $K=1$.  Finally, we test $3$ different values of $h$,: $h=1$ (type II), $h=1.2$ (type 'II.2'), and $h=2$ (type III), and 8 different values of $Z$.
+
+\begin{tabularx}{\textwidth}{|c|X|c|}
+\multicolumn{3}{|c|}{Allometric Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$a_r$&Scaling constant for per capita primary consumption&$1$\\
+$a_x^{(inv)}$&Scaling constant for metabolic rate of invertebrate consumers & $0.314$\\
+$a_x^{(e.ver)}$&Scaling constant for metabolic rate of ectotherm vertebrate consumers & $0.88$\\
+$a_y^{(inv)}$&Scaling constant for maximum consumption rate of invertebrate consumers & $0.0392$\\
+$a_y^{(e.ver)}$&Scaling constant for maximum consumption rate of ectotherm vertebrate consumers & $0.22$\\
+$Z$&Consumer-resource body size ratio&Variable, $n=8$\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Functional Response Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$B_0$&Half-saturation density&$0.5$\\
+$h$&Hill Coefficient&Variable, $n=3$\\
+$\omega_{i\leftarrow j}$&Preference of $i$ for $j$&Variable, $n=2$\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Dynamical Equation Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$r_i$&Intrinsic growth of producer $i$&1\\
+$G_i$&Self-limitation of producer $i$, no competition&$1-B_i/K_i$\\
+$K_i$&Carrying capacity of producer $i$&1\\
+$x_i$&Metabolic rate of consumer $i$&$a_x M_i^{-0.25}$\\
+$y_i^{(inv)}$&Maximum relative consumption rate of invertebrate consumers & 8\\
+$y_i^{(e.ver)}$&Maximum relative consumption rate of ectotherm vertebrate consumers& 4\\
+$e_{i\leftarrow j}^{(inv)}$&Assimilation efficiency of $j$ by $i$ for a consumer $j$ (carnivory) & 0.85\\
+$e_{i\leftarrow j}^{(e.ver)}$&Assimilation efficiency of $j$ by $i$ for a producer $j$ (herbivory) & 0.45\\
+$f_{i\leftarrow j}$&Fraction of biomass lost by $j$ that is consumed by $i$ & 1\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Food Web Parameters}\\
+\hline
+Parameter&Description&Value\\
+\hline
+$S$&Species richness&variable, $n=3$\\
+$C$&Connectance & 0.15\\
+$n_bas$&Number of basal species&5\\
+\hline
+\hline
+\multicolumn{3}{|c|}{Dependent Variables}\\
+\hline
+Parameter & Values or Description & replicates\\
+$h$&$h=1,1.2,2$&3\\
+$\omega_{i\leftarrow j}$&Weak or strong generalist&2\\
+$S$&$S=20,30,40$&3\\
+$a_x$&All consumers either invertebrates or ectotherm invertebrates. & 2\\
+$Z$&8 values evenly spaced on a log scale from $10^{-2}$ to $10^5$ & 2\\
+\hline
+\end{tabularx}
+
+
+\subsection{Simulations \& Numerical Methods}
+We performed a full factorial design with all independent variables on the 100 generated webs.  This corresponds to 28,800 simulations.  We simulated the above dynamics using ode45 in MatLab using an absolute error tolerance of $10^{-30}$, a relative error tolerance of $10^{-5}$ and event detection.  An extinction was defined to have occurred as soon as a species reached a population density less than $10^{-30}$.  Event detection was used to zero out a population as soon as it crossed that threshold.  Initial conditions were uniformly randomly distributed in $[0.05,1]$, with the same initial conditions being used for each web.  We ran the simulation to a final time of $t=2000$.  Persistence of a web was defined to be the fraction of species with positive biomass density at the end of a simulation.
+
+
+\end{document}  
